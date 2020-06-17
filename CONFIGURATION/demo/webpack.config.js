@@ -4,6 +4,8 @@
 */
 const path = require('path');
 const webpack = require('webpack');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -12,9 +14,11 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     libraryTarget: "umd"
   },
+  
   devServer: {
     contentBase: './dist',
-    port: 8080
+    port: 8081,
+    open:true,
   },
   /* 
     默认 false
@@ -23,7 +27,7 @@ module.exports = {
     官网 https://www.webpackjs.com/guides/development/#%E9%80%89%E6%8B%A9%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7
   */
   watch:false,
-  devtool: "source-map",
+  devtool: "source-map",//加了source-map 在出错的时候就会锁定到源文件而不是编译后的文件。在sourcrs也多了一个webpack 对文件夹
   // 开发环境
   mode: 'production',
   // webpack 默认是处理 js 的，如果非js 文件的话，那么需要用loader ，这样webpack 才会处理这种类型的文件（比如css 等）
@@ -43,13 +47,20 @@ module.exports = {
     }
   },
   plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title: "My App",
+      filename: "app.html",
+      template: "./src/index.html"
+    }) ,
     /* 
       官网翻译的不详细 还是得看原版的 原版的有下面这个解释  诶 英文好真好
       ProvidePlugin  自动加载模块，而不必到处 import 或 require 。可以以全局的模式直接使用模块变量
     */
     new webpack.ProvidePlugin({
       aa1: path.join(__dirname, './src/plugin'),
-    })
+    }),
+    
   ],
   /* 
     打包的时候忽略打包的文件 因为之前 npm 安装jquery并且导入了
@@ -69,10 +80,12 @@ module.exports = {
         key  jquery  就是 import $ from 'jquery'  表示应该排除 import $ from 'jquery' 中的 jquery 模块
         value  一个全局的 jQuery 变量 因为jquery 这个 js返回了一个全局的jQuery变量
 
+      packjson.json 没有jquery 的包可以看下
+      
        
-  */
-  // externals: {
-  //   jquery: 'jQuery'
-  // }
+  */ 
+  externals: {
+    jquery: 'jQuery'
+  }
  
 };

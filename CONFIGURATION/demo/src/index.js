@@ -3,6 +3,8 @@ import './style.css';
 // const $ = require("jquery");
 // import $ from 'jquery';
 
+console.log(process.env.NODE_ENV);
+
 /*  用原来的方式*/
 // import {resolve} from "./resolve"
 
@@ -26,7 +28,7 @@ function component() {
     aa1()
 
         
-    $("body").css('background','red')
+    $("body").css('background','yellow')
     return element;
   }
 
